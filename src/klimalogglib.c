@@ -1,3 +1,21 @@
+/*
+    KlimaLoggLib - KlimaLoggPro data manipulation library
+    Copyright (C) 2020  Nexrem
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 #include <time.h>
 #include <string.h>
 #include <stdint.h>
@@ -30,8 +48,10 @@ float klg_gethumid(uint32_t _humi) {
 }
 
 int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size_t size) {
+    // not enough data in buffer to read
     if (size<KLG_MEASURE_SIZE) return 1;
     
+    // measurement data is little-endian, flip byte order and merge
     size_t index = 0;
     uint64_t timestamp = 0;
     for (int i=0;i<8;i++) {
@@ -40,14 +60,17 @@ int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size
         index++;
     }
 
+    // convert parsed time
     klg_getdatetime(&_measurement->datetime, timestamp);
 
+    // Read sensordata for all 1+8 sensors
     for (uint8_t i=0;i<9;i++) {
 
         uint32_t temp = 0;
         uint32_t humid = 0;
-        struct klg_sensordata *sensor_p;
 
+        // Select sensor
+        struct klg_sensordata *sensor_p;
         switch(i) {
             case 0:
                 sensor_p = &_measurement->sensor0;
@@ -78,18 +101,21 @@ int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size
                 break;
         }
 
+        // Flip byte order of temp reading
         for (uint8_t j=0;j<4;j++) {
             uint32_t data = *(_buf+index);
             temp |= data<<(j*8);
             index++;
         }
 
+        // Flip byte order of humidity reading
         for (uint8_t j=0;j<4;j++) {
             uint32_t data = *(_buf+index);
             humid |= data<<(j*8);
             index++;
         }
 
+        // Set enable flags and write data out
         if (temp == KLG_INVALID_TEMP) {
             sensor_p->t_enable = 0;
         }
@@ -98,6 +124,7 @@ int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size
             memcpy(&sensor_p->temp, &temp, sizeof(temp));
         }
 
+        // Set enable flags and write data out
         if (humid == KLG_INVALID_HUMID) {
             sensor_p->h_enable = 0;
         }
