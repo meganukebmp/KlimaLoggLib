@@ -1,3 +1,4 @@
 0_history.dat
 *.o
+*.d
 *.exe
