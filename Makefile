@@ -1,7 +1,7 @@
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:%.c=%.o)
 DEP = $(SRC:%.c=%.d)
-PROG = program.exe
+PROG = parsefile
 
 CC = gcc
 CFLAGS = -Wall -std=c99 -Wall -pedantic -MD
@@ -16,6 +16,6 @@ $(PROG): $(OBJ)
 
 .PHONY: clean
 clean:
-	rm $(OBJ) $(PROG) $(DEP)
+	rm -f $(OBJ) $(PROG) $(DEP) $(PROG).exe
 
 -include $(DEP)
