@@ -60,6 +60,9 @@ int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size
         index++;
     }
 
+    // Read the alarm flags (bytes 80 and 81)
+    uint16_t alarm = *(_buf+80) | *(_buf+81)<<8;
+
     // convert parsed time
     klg_getdatetime(&_measurement->datetime, timestamp);
 
@@ -132,6 +135,8 @@ int8_t klg_parsebuffer(struct klg_measurement* _measurement, uint8_t *_buf, size
             sensor_p->h_enable = 1;
             memcpy(&sensor_p->humid, &humid, sizeof(humid));
         }
+
+        sensor_p->alarm = (alarm & (1<<i)) ? 1 : 0;
     }
     return 0;
 }

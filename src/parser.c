@@ -110,6 +110,16 @@ int main(int argc, char *argv[]) {
             if (measurement.sensor8.h_enable) printf("H:%.2f%% ", measurement.sensor8.humid);
         }
 
+        if (measurement.sensor0.alarm) printf("A0 ");
+        if (measurement.sensor1.alarm) printf("A1 ");
+        if (measurement.sensor2.alarm) printf("A2 ");
+        if (measurement.sensor3.alarm) printf("A3 ");
+        if (measurement.sensor4.alarm) printf("A4 ");
+        if (measurement.sensor5.alarm) printf("A5 ");
+        if (measurement.sensor6.alarm) printf("A6 ");
+        if (measurement.sensor7.alarm) printf("A7 ");
+        if (measurement.sensor8.alarm) printf("A8 ");
+
         printf("\n");
         counter++;
     }

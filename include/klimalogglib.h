@@ -30,6 +30,7 @@
 struct klg_sensordata {
     uint8_t t_enable;
     uint8_t h_enable;
+    uint8_t alarm;
     float temp;
     float humid;
 };
