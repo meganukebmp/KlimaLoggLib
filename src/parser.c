@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 
         // parse the read data
         struct klg_measurement measurement;
-        klg_parsebuffer(&measurement, buffer, KLG_MEASURE_SIZE);
+        klg_parsebuffer(&measurement, buffer, sizeof(buffer));
 
         // Print formatted timestamp
         printf("%u-%02u-%02u %02u:%02u:%02u ",
